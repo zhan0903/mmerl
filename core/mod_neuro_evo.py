@@ -2,6 +2,13 @@ import random
 import numpy as np
 from scipy.special import expit
 import fastrand, math
+import logging
+
+logger = logging.getLogger(__name__)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger.setLevel(level=logging.DEBUG)
+
+
 
 
 #Neuroevolution SSNE
@@ -79,6 +86,7 @@ class SSNE:
         num_params = len(list(gene.parameters()))
         ssne_probabilities = np.random.uniform(0, 1, num_params) * 2
         model_params = gene.state_dict()
+        logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
 
         for i, key in enumerate(model_params): #Mutate each param
 
