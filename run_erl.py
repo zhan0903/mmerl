@@ -6,6 +6,7 @@ from core import replay_memory
 from core import ddpg as ddpg
 import argparse
 import time
+import torch.nn as nn
 
 # import logging
 #
@@ -28,7 +29,6 @@ env_tag = vars(parser.parse_args())['env']
 
 class Parameters:
     def __init__(self):
-
         #Number of Frames to Run
         if env_tag == 'Hopper-v2': self.num_frames = 4000000
         elif env_tag == 'Ant-v2': self.num_frames = 6000000
@@ -87,7 +87,7 @@ class Agent:
         for actor in self.pop: actor.eval()
 
         #Init RL Agent
-        self.rl_agent = ddpg.DDPG(args)
+        self.rl_agent = nn.DataParallel(ddpg.DDPG(args))
         self.replay_buffer = replay_memory.ReplayMemory(args.buffer_size)
         self.ounoise = ddpg.OUNoise(args.action_dim)
 

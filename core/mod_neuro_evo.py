@@ -12,8 +12,6 @@ logger.addHandler(console_handler)
 logger.setLevel(level=logging.DEBUG)
 
 
-
-
 #Neuroevolution SSNE
 class SSNE:
     def __init__(self, args):
@@ -99,8 +97,10 @@ class SSNE:
 
             # References to the variable keys
             W = model_params[key]
+            logger.debug("key:{}".format(key))
             if len(W.shape) == 2: #Weights, no bias
 
+                logger.debug("W:{}".format(W))
                 num_weights= W.shape[0]*W.shape[1]
                 ssne_prob = ssne_probabilities[i]
 
@@ -120,7 +120,6 @@ class SSNE:
 
                         # Regularization hard limit
                         W[ind_dim1, ind_dim2] = self.regularize_weight(W[ind_dim1, ind_dim2], 1000000)
-
 
     def clone(self, master, replacee):  # Replace the replacee individual with master
         for target_param, source_param in zip(replacee.parameters(), master.parameters()):
