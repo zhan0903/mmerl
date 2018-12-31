@@ -90,7 +90,8 @@ class SSNE:
         ssne_probabilities = np.random.uniform(0, 1, num_params) * 2
         model_params = gene.state_dict()
         logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
-        logger.debug("list of gene.parameters:{}".format(list(gene.parameters())))
+        # logger.debug("list of gene.parameters:{}".format(list(gene.parameters())))
+        logger.debug("type of gene:{}".format(type(gene)))
 
         for i, key in enumerate(model_params): #Mutate each param
 
