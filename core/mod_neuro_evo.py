@@ -87,6 +87,7 @@ class SSNE:
         ssne_probabilities = np.random.uniform(0, 1, num_params) * 2
         model_params = gene.state_dict()
         logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
+        logger.debug("just test")
 
         for i, key in enumerate(model_params): #Mutate each param
 
@@ -174,6 +175,8 @@ class SSNE:
             if random.random() < self.args.crossover_prob: self.crossover_inplace(pop[i], pop[j])
 
         # Mutate all genes in the population except the new elitists
+        logger.debug("just test in epoce")
+
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 if random.random() < self.args.mutation_prob: self.mutate_inplace(pop[i])
