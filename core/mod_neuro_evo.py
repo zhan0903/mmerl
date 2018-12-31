@@ -100,8 +100,9 @@ class SSNE:
             logger.debug("key:{}".format(key))
             if len(W.shape) == 2: #Weights, no bias
 
-                logger.debug("W:{}".format(W))
+                # logger.debug("W:{}".format(W))
                 num_weights= W.shape[0]*W.shape[1]
+                logger.debug("num_weights:{}".format(num_weights))
                 ssne_prob = ssne_probabilities[i]
 
                 if random.random() < ssne_prob:
