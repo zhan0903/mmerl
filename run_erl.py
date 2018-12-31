@@ -87,7 +87,7 @@ class Agent:
         for actor in self.pop: actor.eval()
 
         #Init RL Agent
-        self.rl_agent = nn.DataParallel(ddpg.DDPG(args))
+        self.rl_agent = ddpg.DDPG(args)
         self.replay_buffer = replay_memory.ReplayMemory(args.buffer_size)
         self.ounoise = ddpg.OUNoise(args.action_dim)
 
