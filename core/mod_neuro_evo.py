@@ -51,7 +51,7 @@ class SSNE:
             W1 = param1.data
             W2 = param2.data
 
-            if len(W1.shape) == 2: #Weights no bias
+            if len(W1.shape) == 2: # Weights no bias
                 num_variables = W1.shape[0]
                 # Crossover opertation [Indexed by row]
                 num_cross_overs = fastrand.pcg32bounded(num_variables * 2)  # Lower bounded on full swaps
@@ -115,9 +115,9 @@ class SSNE:
                         ind_dim1 = fastrand.pcg32bounded(W.shape[0])
                         ind_dim2 = fastrand.pcg32bounded(W.shape[-1])
 
-                        logger.debug("ind_dim1,ind_dim2:{0},{1}".format(ind_dim1,ind_dim2))
+                        # logger.debug("ind_dim1,ind_dim2:{0},{1}".format(ind_dim1,ind_dim2))
                         random_num = random.random()
-                        logger.debug("W[ind_dim1, ind_dim2]:{}".format(W[ind_dim1, ind_dim2]))
+                        # logger.debug("W[ind_dim1, ind_dim2]:{}".format(W[ind_dim1, ind_dim2]))
 
                         if random_num < super_mut_prob:  # Super Mutation probability
                             W[ind_dim1, ind_dim2] += random.gauss(0, super_mut_strength * W[ind_dim1, ind_dim2])
@@ -144,6 +144,7 @@ class SSNE:
         elitist_index = index_rank[:self.num_elitists]  # Elitist indexes safeguard
 
         # Selection step
+        logger.debug("index_rank:{}".format(index_rank))
         offsprings = self.selection_tournament(index_rank, num_offsprings=len(index_rank) - self.num_elitists,
                                                tournament_size=3)
         # Figure out unselected candidates
@@ -158,7 +159,6 @@ class SSNE:
         #COMPUTE RL_SELECTION RATE
         if self.rl_policy != None: #RL Transfer happened
             self.selection_stats['total'] += 1.0
-
             if self.rl_policy in elitist_index: self.selection_stats['elite'] += 1.0
             elif self.rl_policy in offsprings: self.selection_stats['selected'] += 1.0
             elif self.rl_policy in unselects: self.selection_stats['discarded'] += 1.0
@@ -183,6 +183,7 @@ class SSNE:
 
         # Crossover for selected offsprings
         for i, j in zip(offsprings[0::2], offsprings[1::2]):
+            assert self.args.crossover_prob == 0
             if random.random() < self.args.crossover_prob: self.crossover_inplace(pop[i], pop[j])
 
         # Mutate all genes in the population except the new elitists
@@ -190,6 +191,7 @@ class SSNE:
 
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
+                assert self.args.mutation_prob == 0.9
                 if random.random() < self.args.mutation_prob: self.mutate_inplace(pop[i])
 
         return new_elitists[0]
