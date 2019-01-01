@@ -25,6 +25,7 @@ class SSNE:
         self.selection_stats = {'elite': 0, 'selected': 0, 'discarded': 0, 'total': 0.0000001}
 
     def selection_tournament(self, index_rank, num_offsprings, tournament_size):
+        logger.debug("selection_tournament:{0},{1},{2}".format(index_rank,num_offsprings,tournament_size))
         total_choices = len(index_rank)
         offsprings = []
         for i in range(num_offsprings):
