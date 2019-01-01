@@ -144,7 +144,7 @@ class SSNE:
         elitist_index = index_rank[:self.num_elitists]  # Elitist indexes safeguard
 
         # Selection step
-        logger.debug("index_rank:{0}, fitness_evals:{1}".format(index_rank, fitness_evals))
+        logger.debug("self.num_elitists:{0}".format(self.num_elitists))
         offsprings = self.selection_tournament(index_rank, num_offsprings=len(index_rank) - self.num_elitists,
                                                tournament_size=3)
 
