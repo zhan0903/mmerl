@@ -145,7 +145,7 @@ class DDPG(object):
         current_q = self.critic.forward((state_batch), (action_batch))
         dt = self.loss(current_q, target_q)
         dt.backward()
-        nn.utils.clip_grad_norm(self.critic.parameters(), 10)
+        nn.utils.clip_grad_norm_(self.critic.parameters(), 10)
         self.critic_optim.step()
 
         #Actor Update
@@ -153,7 +153,7 @@ class DDPG(object):
         policy_loss = -self.critic.forward((state_batch), self.actor.forward((state_batch)))
         policy_loss = policy_loss.mean()
         policy_loss.backward()
-        nn.utils.clip_grad_norm(self.critic.parameters(), 10)
+        nn.utils.clip_grad_norm_(self.critic.parameters(), 10)
         self.actor_optim.step()
 
         soft_update(self.actor_target, self.actor, self.tau)
