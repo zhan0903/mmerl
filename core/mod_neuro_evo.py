@@ -102,15 +102,22 @@ class SSNE:
 
                 # logger.debug("W:{}".format(W))
                 num_weights= W.shape[0]*W.shape[1]
-                logger.debug("num_weights:{}".format(num_weights))
+                logger.debug("num_weights:{0},i:{1}".format(num_weights, i))
+                logger.debug("W.shape[0]:{0},W.shape[1]:{1}".format(W.shape[0], W.shape[1]))
+
                 ssne_prob = ssne_probabilities[i]
 
                 if random.random() < ssne_prob:
                     num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
+                    logger.debug("num_mutations:{}".format(num_mutations))
+
                     for _ in range(num_mutations):
                         ind_dim1 = fastrand.pcg32bounded(W.shape[0])
                         ind_dim2 = fastrand.pcg32bounded(W.shape[-1])
+
+                        logger.debug("ind_dim1,ind_dim2:{0},{1}".format(ind_dim1,ind_dim2))
                         random_num = random.random()
+                        logger.debug("W[ind_dim1, ind_dim2]:{}".format(W[ind_dim1, ind_dim2]))
 
                         if random_num < super_mut_prob:  # Super Mutation probability
                             W[ind_dim1, ind_dim2] += random.gauss(0, super_mut_strength * W[ind_dim1, ind_dim2])
