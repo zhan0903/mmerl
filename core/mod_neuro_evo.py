@@ -147,6 +147,9 @@ class SSNE:
         logger.debug("index_rank:{0}, fitness_evals:{1}".format(index_rank, fitness_evals))
         offsprings = self.selection_tournament(index_rank, num_offsprings=len(index_rank) - self.num_elitists,
                                                tournament_size=3)
+
+        logger.debug("index_rank:{0}, fitness_evals:{1}, offsprings:{2}".format(index_rank, fitness_evals, offsprings))
+
         # Figure out unselected candidates
         unselects = []; new_elitists = []
         for i in range(self.population_size):
