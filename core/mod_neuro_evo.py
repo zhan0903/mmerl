@@ -125,6 +125,9 @@ class SSNE:
                 noise = mask * torch.randn(W.shape[0], W.shape[1], dtype=torch.float) * 0.002
                 W += noise.cuda()
 
+                if key == "w_l2.weight":
+                    logger.debug("noise[:100]:{}".format(noise[:100]))
+
                 # if random.random() < ssne_prob:
                 #     num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
                 #     logger.debug("num_mutations:{}".format(num_mutations))
@@ -217,10 +220,10 @@ class SSNE:
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
-                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_out.bias"]))
+                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_l2.weight"]))
                 # if random.random() < self.args.mutation_prob:
                 self.mutate_inplace(pop[i], num_frames)
-                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_out.bias"]))
+                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_l2.weight"]))
 
         return new_elitists[0]
 
