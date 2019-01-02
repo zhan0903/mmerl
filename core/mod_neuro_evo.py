@@ -175,11 +175,13 @@ class SSNE:
             new_elitists.append(replacee)
             self.clone(master=pop[i], replacee=pop[replacee])
 
+        logger.debug("new_elitists:{}".format(new_elitists))
+
         # Crossover for unselected genes with 100 percent probability
         if len(unselects) % 2 != 0:  # Number of unselects left should be even
             unselects.append(unselects[fastrand.pcg32bounded(len(unselects))])
         for i, j in zip(unselects[0::2], unselects[1::2]):
-            off_i = random.choice(new_elitists);
+            off_i = random.choice(new_elitists)
             off_j = random.choice(offsprings)
             self.clone(master=pop[off_i], replacee=pop[i])
             self.clone(master=pop[off_j], replacee=pop[j])
