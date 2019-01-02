@@ -160,6 +160,8 @@ class SSNE:
                 unselects.append(i)
         random.shuffle(unselects)
 
+        logger.debug("unselects:{}".format(unselects))
+
         #COMPUTE RL_SELECTION RATE
         if self.rl_policy != None: #RL Transfer happened
             self.selection_stats['total'] += 1.0
