@@ -220,10 +220,10 @@ class SSNE:
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
-                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_l2.weight"][:20]))
+                logger.debug("before pop[i][:10]:{}".format(pop[i].state_dict()["w_l2.weight"][:10]))
                 # if random.random() < self.args.mutation_prob:
                 self.mutate_inplace(pop[i], num_frames)
-                logger.debug("pop[i]:{}".format(pop[i].state_dict()["w_l2.weight"][:20]))
+                logger.debug("after pop[i][:10]:{}".format(pop[i].state_dict()["w_l2.weight"][:10]))
 
         return new_elitists[0]
 
