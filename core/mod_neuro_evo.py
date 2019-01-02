@@ -177,7 +177,7 @@ class SSNE:
             new_elitists.append(replacee)
             self.clone(master=pop[i], replacee=pop[replacee])
 
-        logger.debug("new_elitists:{}".format(new_elitists))
+        logger.debug("new_elitists:{0}, pop[0]:{1}".format(new_elitists, pop[0]))
 
         # Crossover for unselected genes with 100 percent probability
         if len(unselects) % 2 != 0:  # Number of unselects left should be even
