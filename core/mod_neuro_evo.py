@@ -113,7 +113,7 @@ class SSNE:
 
                 # for _ in range(num_weights):
                 # noise = np.random.randn(W.shape[0], W.shape[1])*0.002
-                noise = torch.randn(W.shape[0], W.shape[1], dtype=torch.double) * 0.002
+                noise = torch.randn(W.shape[0], W.shape[1]) * 0.002
                 W += noise
                 #
                 # if random.random() < ssne_prob:
