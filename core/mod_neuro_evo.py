@@ -114,7 +114,7 @@ class SSNE:
                 # for _ in range(num_weights):
                 # noise = np.random.randn(W.shape[0], W.shape[1])*0.002
                 noise = torch.randn(W.shape[0], W.shape[1], dtype=torch.float) * 0.002
-                W += noise
+                W += noise.cuda()
                 #
                 # if random.random() < ssne_prob:
                 #     num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
