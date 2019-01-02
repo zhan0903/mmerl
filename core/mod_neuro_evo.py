@@ -16,6 +16,7 @@ logger.setLevel(level=logging.DEBUG)
 class SSNE:
     def __init__(self, args):
         self.current_gen = 0
+        self.generation = 0
         self.args = args
         self.population_size = self.args.pop_size;
         self.num_elitists = int(self.args.elite_fraction * args.pop_size)
@@ -78,17 +79,18 @@ class SSNE:
                         ind_cr = fastrand.pcg32bounded(W1.shape[0])  #
                         W2[ind_cr] = W1[ind_cr]
 
-    def mutate_inplace(self, gene):
+    def mutate_inplace(self, gene, num_frames):
         mut_strength = 0.1
         num_mutation_frac = 0.1
         super_mut_strength = 10
         super_mut_prob = 0.05
         reset_prob = super_mut_prob + 0.05
 
+
         num_params = len(list(gene.parameters()))
-        ssne_probabilities = np.random.uniform(0, 1, num_params) * 2
+        # ssne_probabilities = np.random.uniform(0, 1, num_params) * 2
         model_params = gene.state_dict()
-        logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
+        # logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
         # logger.debug("list of gene.parameters:{}".format(list(gene.parameters())))
         logger.debug("type of gene:{}".format(type(gene)))
 
@@ -106,29 +108,33 @@ class SSNE:
                 logger.debug("num_weights:{0},i:{1}".format(num_weights, i))
                 logger.debug("W.shape[0]:{0},W.shape[1]:{1}".format(W.shape[0], W.shape[1]))
 
-                ssne_prob = ssne_probabilities[i]
+                # ssne_prob = ssne_probabilities[i]
 
-                if random.random() < ssne_prob:
-                    num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
-                    logger.debug("num_mutations:{}".format(num_mutations))
-
-                    for _ in range(num_mutations):
-                        ind_dim1 = fastrand.pcg32bounded(W.shape[0])
-                        ind_dim2 = fastrand.pcg32bounded(W.shape[-1])
-
-                        # logger.debug("ind_dim1,ind_dim2:{0},{1}".format(ind_dim1,ind_dim2))
-                        random_num = random.random()
-                        # logger.debug("W[ind_dim1, ind_dim2]:{}".format(W[ind_dim1, ind_dim2]))
-
-                        if random_num < super_mut_prob:  # Super Mutation probability
-                            W[ind_dim1, ind_dim2] += random.gauss(0, super_mut_strength * W[ind_dim1, ind_dim2])
-                        elif random_num < reset_prob:  # Reset probability
-                            W[ind_dim1, ind_dim2] = random.gauss(0, 1)
-                        else:  # mutauion even normal
-                            W[ind_dim1, ind_dim2] += random.gauss(0, mut_strength *W[ind_dim1, ind_dim2])
-
-                        # Regularization hard limit
-                        W[ind_dim1, ind_dim2] = self.regularize_weight(W[ind_dim1, ind_dim2], 1000000)
+                # for _ in range(num_weights):
+                noise = np.random.randn(W.shape[0], W.shape[1])*0.002
+                W += noise
+                #
+                # if random.random() < ssne_prob:
+                #     num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
+                #     logger.debug("num_mutations:{}".format(num_mutations))
+                #
+                #     for _ in range(num_mutations):
+                #         ind_dim1 = fastrand.pcg32bounded(W.shape[0])
+                #         ind_dim2 = fastrand.pcg32bounded(W.shape[-1])
+                #
+                #         # logger.debug("ind_dim1,ind_dim2:{0},{1}".format(ind_dim1,ind_dim2))
+                #         random_num = random.random()
+                #         # logger.debug("W[ind_dim1, ind_dim2]:{}".format(W[ind_dim1, ind_dim2]))
+                #
+                #         if random_num < super_mut_prob:  # Super Mutation probability
+                #             W[ind_dim1, ind_dim2] += random.gauss(0, super_mut_strength * W[ind_dim1, ind_dim2])
+                #         elif random_num < reset_prob:  # Reset probability
+                #             W[ind_dim1, ind_dim2] = random.gauss(0, 1)
+                #         else:  # mutauion even normal
+                #             W[ind_dim1, ind_dim2] += random.gauss(0, mut_strength *W[ind_dim1, ind_dim2])
+                #
+                #         # Regularization hard limit
+                #         W[ind_dim1, ind_dim2] = self.regularize_weight(W[ind_dim1, ind_dim2], 1000000)
 
     def clone(self, master, replacee):  # Replace the replacee individual with master
         for target_param, source_param in zip(replacee.parameters(), master.parameters()):
@@ -138,7 +144,7 @@ class SSNE:
         for param in (gene.parameters()):
             param.data.copy_(param.data)
 
-    def epoch(self, pop, fitness_evals):
+    def epoch(self, pop, fitness_evals, num_frames):
 
         # Entire epoch is handled with indices; Index rank nets by fitness evaluation (0 is the best after reversing)
         index_rank = self.list_argsort(fitness_evals); index_rank.reverse()
@@ -200,7 +206,7 @@ class SSNE:
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
-                if random.random() < self.args.mutation_prob: self.mutate_inplace(pop[i])
+                if random.random() < self.args.mutation_prob: self.mutate_inplace(pop[i], num_frames)
 
         return new_elitists[0]
 

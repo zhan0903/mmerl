@@ -160,7 +160,7 @@ class Agent:
         for eval in range(5): test_score += self.evaluate(self.pop[champ_index], is_render=True, is_action_noise=False, store_transition=False)/5.0
 
         #NeuroEvolution's probabilistic selection and recombination step
-        elite_index = self.evolver.epoch(self.pop, all_fitness)
+        elite_index = self.evolver.epoch(self.pop, all_fitness, self.num_frames)
 
         # time_evolution = time.time()
         # print("evolution time:", (time_evolution-time_start)/3600)
