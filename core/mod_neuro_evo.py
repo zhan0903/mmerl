@@ -17,7 +17,8 @@ logger.setLevel(level=logging.DEBUG)
 class SSNE:
     def __init__(self, args):
         self.current_gen = 0
-        self.generation = 0
+        self.generation = 1
+        self.p = 0
         self.args = args
         self.population_size = self.args.pop_size;
         self.num_elitists = int(self.args.elite_fraction * args.pop_size)
@@ -113,9 +114,16 @@ class SSNE:
 
                 # for _ in range(num_weights):
                 # noise = np.random.randn(W.shape[0], W.shape[1])*0.002
-                noise = torch.randn(W.shape[0], W.shape[1], dtype=torch.float) * 0.002
+                if num_frames // 200000 >= self.generation:
+                    self.p = min(0.9, self.p + 0.2)
+                    self.generation = self.generation+1
+                    # mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
+
+                mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
+
+                noise = mask * torch.randn(W.shape[0], W.shape[1], dtype=torch.float) * 0.002
                 W += noise.cuda()
-                #
+
                 # if random.random() < ssne_prob:
                 #     num_mutations = fastrand.pcg32bounded(int(math.ceil(num_mutation_frac * num_weights)))  # Number of mutation instances
                 #     logger.debug("num_mutations:{}".format(num_mutations))
@@ -208,7 +216,10 @@ class SSNE:
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
-                if random.random() < self.args.mutation_prob: self.mutate_inplace(pop[i], num_frames)
+                logger.debug("pop[i]:{}".format(pop[i][:100]))
+                # if random.random() < self.args.mutation_prob:
+                self.mutate_inplace(pop[i], num_frames)
+                logger.debug("pop[i]:{}".format(pop[i][:100]))
 
         return new_elitists[0]
 
