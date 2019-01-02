@@ -120,6 +120,7 @@ class SSNE:
                     # mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
 
                 mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
+                mask = torch.from_numpy(mask).float()
 
                 noise = mask * torch.randn(W.shape[0], W.shape[1], dtype=torch.float) * 0.002
                 W += noise.cuda()
