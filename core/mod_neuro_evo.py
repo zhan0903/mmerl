@@ -3,6 +3,7 @@ import numpy as np
 from scipy.special import expit
 import fastrand, math
 import logging
+import torch
 
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -111,7 +112,8 @@ class SSNE:
                 # ssne_prob = ssne_probabilities[i]
 
                 # for _ in range(num_weights):
-                noise = np.random.randn(W.shape[0], W.shape[1])*0.002
+                # noise = np.random.randn(W.shape[0], W.shape[1])*0.002
+                noise = torch.randn(W.shape[0], W.shape[1], dtype=torch.double) * 0.002
                 W += noise
                 #
                 # if random.random() < ssne_prob:
