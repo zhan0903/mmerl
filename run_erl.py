@@ -7,6 +7,7 @@ from core import ddpg as ddpg
 import argparse
 import time
 import torch.nn as nn
+from datetime import datetime
 
 # import logging
 #
@@ -69,7 +70,7 @@ class Parameters:
 
         #Save Results
         self.state_dim = None; self.action_dim = None #Simply instantiate them here, will be initialized later
-        self.save_foldername = 'R_ERL_%s/' % env_tag
+        self.save_foldername = '%s_R_ERL_%s' % (datetime.now().strftime("%Y-%m-%d-%H%M"), env_tag)
         if not os.path.exists(self.save_foldername): os.makedirs(self.save_foldername)
 
 
