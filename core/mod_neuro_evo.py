@@ -222,10 +222,10 @@ class SSNE:
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
                 logger.debug("before pop[i][w_l2.weight]:{0}, shape of pop[i][w_l2.weight]:{1}".
-                             format(pop[i].state_dict()["w_l2.weight"], pop[i].state_dict()["w_l2.weight"].shape))
+                             format(pop[i].state_dict()["w_l2.weight"][0][1], pop[i].state_dict()["w_l2.weight"].shape))
                 # if random.random() < self.args.mutation_prob:
                 self.mutate_inplace(pop[i], num_frames)
-                logger.debug("after pop[i][w_l2.weight]:{}".format(pop[i].state_dict()["w_l2.weight"]))
+                logger.debug("after pop[i][w_l2.weight]:{}".format(pop[i].state_dict()["w_l2.weight"][0][1]))
 
         return new_elitists[0]
 
