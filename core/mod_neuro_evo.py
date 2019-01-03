@@ -94,7 +94,7 @@ class SSNE:
         model_params = gene.state_dict()
         # logger.debug("num_params:{0}, ssne_probabilities:{1}".format(num_params, ssne_probabilities))
         # logger.debug("list of gene.parameters:{}".format(list(gene.parameters())))
-        logger.debug("type of gene:{}".format(type(gene)))
+        # logger.debug("type of gene:{}".format(type(gene)))
 
         for i, key in enumerate(model_params): #Mutate each param
 
@@ -102,13 +102,13 @@ class SSNE:
 
             # References to the variable keys
             W = model_params[key]
-            logger.debug("key:{}".format(key))
+            # logger.debug("key:{}".format(key))
             if len(W.shape) == 2: #Weights, no bias
 
                 # logger.debug("W:{}".format(W))
                 num_weights= W.shape[0]*W.shape[1]
-                logger.debug("num_weights:{0},i:{1}".format(num_weights, i))
-                logger.debug("W.shape[0]:{0},W.shape[1]:{1}".format(W.shape[0], W.shape[1]))
+                # logger.debug("num_weights:{0},i:{1}".format(num_weights, i))
+                # logger.debug("W.shape[0]:{0},W.shape[1]:{1}".format(W.shape[0], W.shape[1]))
 
                 # ssne_prob = ssne_probabilities[i]
 
@@ -117,6 +117,7 @@ class SSNE:
                 if num_frames // 200000 >= self.generation:
                     self.p = min(0.9, self.p + 0.2)
                     self.generation = self.generation+1
+                    logger.debug("self.generation:{0},num_frames:{1}, self.p:{2}".format(self.generation, num_frames, self.p))
                     # mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
 
                 mask = np.random.choice(2, (W.shape[0], W.shape[1]), p=[self.p, 1 - self.p])
@@ -220,10 +221,11 @@ class SSNE:
         for i in range(self.population_size):
             if i not in new_elitists:  # Spare the new elitists
                 assert self.args.mutation_prob == 0.9
-                logger.debug("before pop[i][:10]:{}".format(pop[i].state_dict()["w_l2.weight"][:10]))
+                logger.debug("before pop[i][w_l2.weight]:{0}, shape of pop[i][w_l2.weight]:{1}".
+                             format(pop[i].state_dict()["w_l2.weight"], pop[i].state_dict()["w_l2.weight"].shape))
                 # if random.random() < self.args.mutation_prob:
                 self.mutate_inplace(pop[i], num_frames)
-                logger.debug("after pop[i][:10]:{}".format(pop[i].state_dict()["w_l2.weight"][:10]))
+                logger.debug("after pop[i][w_l2.weight]:{}".format(pop[i].state_dict()["w_l2.weight"]))
 
         return new_elitists[0]
 
